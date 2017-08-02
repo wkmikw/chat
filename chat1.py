@@ -3,10 +3,12 @@
 import requests
 import itchat
 import time
+from itchat.content import *
 
 KEY = '1107d5601866433dba9599fac1bc0083'
 gaoyuan=''
 SINCERE_WISH = u'%s,来聊天吧！'
+who_send = None
 def get_response(msg):
     # 这里我们就像在“3. 实现最简单的与图灵机器人的交互”中做的一样
     # 构造了要发送给服务器的数据
@@ -27,7 +29,7 @@ def get_response(msg):
         return
 
 
-@itchat.msg_register(itchat.content.TEXT)
+@itchat.msg_register(TEXT)
 def tuling_reply(msg):
     who_send = msg['FromUserName']
     if who_send == gaoyuan:
@@ -67,12 +69,12 @@ def tuling_reply(msg):
     # 有内容一般就是指非空或者非None，你可以用`if a: print('True')`来测试
     return reply or defaultReply
 
-@itchat.msg_register(itchat.content.FRIENDS)
+@itchat.msg_register(FRIENDS)
 def add_friend(msg):
     itchat.add_friend(**msg['Text']) # 该操作会自动将新好友的消息录入，不需要重载通讯录
     itchat.send_msg('Nice to meet you!', msg['RecommendInfo']['UserName'])
  
-@itchat.msg_register(itchat.content.SHARING)
+@itchat.msg_register(SHARING)
 def text_reply(msg):
     friendList = itchat.get_friends(update=True)[1:]
     for friend in friendList:
@@ -81,11 +83,22 @@ def text_reply(msg):
         #print('ok')
         time.sleep(.5) 
 
+@itchat.msg_register([PICTURE, RECORDING, ATTACHMENT, VIDEO])
+def fw_ice(msg):
+    global who_send
+    who_send = msg['FromUserName']
+    msg['Text'](msg['FileName'])
+    itchat.send('@%s@%s' % ({'Picture': 'img', 'Video': 'vid'}.get(msg['Type'], 'fil'), msg['FileName']), xiaoice)
 
+@itchat.msg_register(TEXT, isMpChat=True)
+def get_ice(msg):
+    ice_msg = msg['Text']
+    itchat.send(ice_msg, toUserName=who_send)
 
 # 为了让实验过程更加方便（修改程序不用多次扫码），我们使用热启动
 itchat.auto_login(enableCmdQR=True,hotReload=True)
 
 gaoyuan = itchat.search_friends(name=u'高原')[0]['UserName']
+xiaoice = itchat.search_mps(name='小冰')[0]['UserName']
 
 itchat.run()
