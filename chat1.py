@@ -60,7 +60,7 @@ def tuling_reply(msg):
                     itchat.send(SINCERE_WISH % (friend['DisplayName'] or friend['NickName']), friend['UserName'])
                     time.sleep(.5)
                 return 'send over'
-        return 'yes'#管理账号默认回复
+        #return 'yes'#管理账号默认回复
     # 为了保证在图灵Key出现问题的时候仍旧可以回复，这里设置一个默认回复
     defaultReply = 'I received: ' + msg['Text']
     # 如果图灵Key出现问题，那么reply将会是None
