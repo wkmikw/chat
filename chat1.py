@@ -44,7 +44,7 @@ def tuling_reply(msg):
             return 'changed '+change_word
         #群发信息SINCERE_WISH
         if msg['Text'][:5]=='send:':
-            chatroomName=[5:]
+            chatroomName=msg['Text'][5:]
             itchat.get_chatrooms(update=True)
             chatrooms = itchat.search_chatrooms(name=chatroomName)
             if chatrooms is None:
