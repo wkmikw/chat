@@ -47,7 +47,8 @@ def tuling_reply(msg):
             chatroomName=msg['Text'][5:]
             itchat.get_chatrooms(update=True)
             chatrooms = itchat.search_chatrooms(name=chatroomName)
-            if chatrooms is None:
+            #print(chatrooms)
+            if chatrooms == []:
                 return(u'没有找到群聊：' + chatroomName)
             else:
                 chatroom = itchat.update_chatroom(chatrooms[0]['UserName'])
