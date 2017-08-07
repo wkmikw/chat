@@ -36,6 +36,14 @@ def tuling_reply(msg):
         #测试SINCERE_WISH内容
         if msg['Text']=='test':
             return (SINCERE_WISH % u'高原')
+        
+        '''
+        #测试功能
+        if msg['Text']=='test1':
+            print(msg['User']['NickName'])
+            return (SINCERE_WISH % u'高原')
+        '''
+
         #变更SINCERE_WISH
         if msg['Text'][:7]=='change:':
             change_word=msg['Text'][7:]
@@ -67,6 +75,17 @@ def tuling_reply(msg):
     reply = get_response(msg['Text'])
     # a or b的意思是，如果a有内容，那么返回a，否则返回b
     # 有内容一般就是指非空或者非None，你可以用`if a: print('True')`来测试
+
+    #存储文字信息 try
+    with open('/test.txt', 'a') as f:
+        localtime = time.asctime( time.localtime(time.time()) )
+        f.write(localtime+' \n')
+        f.write(msg['User']['NickName']+':'+msg['Text']+' \n')
+
+#localtime = time.asctime( time.localtime(time.time()) )
+#print "本地时间为 :", localtime
+
+
     return reply or defaultReply
 
 @itchat.msg_register(FRIENDS)
@@ -74,6 +93,7 @@ def add_friend(msg):
     itchat.add_friend(**msg['Text']) # 该操作会自动将新好友的消息录入，不需要重载通讯录
     itchat.send_msg('Nice to meet you!', msg['RecommendInfo']['UserName'])
  
+'''
 @itchat.msg_register(SHARING)
 def text_reply(msg):
     friendList = itchat.get_friends(update=True)[1:]
@@ -82,6 +102,7 @@ def text_reply(msg):
         itchat.send(SINCERE_WISH % (friend['DisplayName'] or friend['NickName']), friend['UserName'])
         #print('ok')
         time.sleep(.5) 
+'''
 
 @itchat.msg_register([PICTURE, RECORDING, ATTACHMENT, VIDEO])
 def fw_ice(msg):
