@@ -77,10 +77,15 @@ def tuling_reply(msg):
     # 有内容一般就是指非空或者非None，你可以用`if a: print('True')`来测试
 
     #存储文字信息 try
-    with open('/test.txt', 'a') as f:
+    place = r'/'+msg['User']['NickName']+r'.txt'
+    #print(place)
+    with open(place, 'a') as f:
         localtime = time.asctime( time.localtime(time.time()) )
         f.write(localtime+' \n')
         f.write(msg['User']['NickName']+':'+msg['Text']+' \n')
+        f.write(localtime+' \n')
+        f.write('爱里寿'+':'+reply+' \n')
+
 
 #localtime = time.asctime( time.localtime(time.time()) )
 #print "本地时间为 :", localtime
