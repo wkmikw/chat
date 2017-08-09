@@ -3,6 +3,8 @@
 import requests
 import itchat
 import time
+import os
+import shutil
 from itchat.content import *
 
 KEY = '1107d5601866433dba9599fac1bc0083'
@@ -36,13 +38,6 @@ def tuling_reply(msg):
         #测试SINCERE_WISH内容
         if msg['Text']=='test':
             return (SINCERE_WISH % u'高原')
-        
-        '''
-        #测试功能
-        if msg['Text']=='test1':
-            print(msg['User']['NickName'])
-            return (SINCERE_WISH % u'高原')
-        '''
 
         #变更SINCERE_WISH
         if msg['Text'][:7]=='change:':
@@ -122,11 +117,18 @@ def fw_ice(msg):
     #文本输出位置
     place = '/'+msg['User']['NickName']+r'.txt'
     #输出图片绝对位置
-    picsite = 'e:/'+'chat'+'/'+msg['FileName']
+    picsite = '/'+'chat'+'/'+msg['FileName']
     with open(place, 'a') as f:
         localtime = time.asctime( time.localtime(time.time()) )
         f.write(localtime+' \n')
         f.write(msg['User']['NickName'] + ':' + 'pic ' + picsite + '\n')
+    #转移照片至指定文件夹
+    path = '/chat/' + msg['User']['NickName']
+    if not os.path.exists(path):
+        os.mkdir(path)
+        shutil.move(picsite,path)
+    else:
+        shutil.move(picsite,path)
 
 @itchat.msg_register(TEXT, isMpChat=True)
 def get_ice(msg):
