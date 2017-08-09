@@ -93,18 +93,6 @@ def add_friend(msg):
     itchat.add_friend(**msg['Text']) # 该操作会自动将新好友的消息录入，不需要重载通讯录
     itchat.send_msg('Nice to meet you!', msg['RecommendInfo']['UserName'])
  
-'''
-早期sharing代替指令
-@itchat.msg_register(SHARING)
-def text_reply(msg):
-    friendList = itchat.get_friends(update=True)[1:]
-    for friend in friendList:
-    # 如果是演示目的，把下面的方法改为print即可
-        itchat.send(SINCERE_WISH % (friend['DisplayName'] or friend['NickName']), friend['UserName'])
-        #print('ok')
-        time.sleep(.5) 
-'''
-
 @itchat.msg_register([PICTURE, RECORDING, ATTACHMENT, VIDEO])
 def fw_ice(msg):
     global who_send
