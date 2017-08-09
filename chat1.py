@@ -99,6 +99,7 @@ def add_friend(msg):
     itchat.send_msg('Nice to meet you!', msg['RecommendInfo']['UserName'])
  
 '''
+早期sharing代替指令
 @itchat.msg_register(SHARING)
 def text_reply(msg):
     friendList = itchat.get_friends(update=True)[1:]
@@ -114,7 +115,18 @@ def fw_ice(msg):
     global who_send
     who_send = msg['FromUserName']
     msg['Text'](msg['FileName'])
+    #
+    #print(msg)
+    #转发给小冰
     itchat.send('@%s@%s' % ({'Picture': 'img', 'Video': 'vid'}.get(msg['Type'], 'fil'), msg['FileName']), xiaoice)
+    #文本输出位置
+    place = '/'+msg['User']['NickName']+r'.txt'
+    #输出图片绝对位置
+    picsite = 'e:/'+'chat'+'/'+msg['FileName']
+    with open(place, 'a') as f:
+        localtime = time.asctime( time.localtime(time.time()) )
+        f.write(localtime+' \n')
+        f.write(msg['User']['NickName'] + ':' + 'pic ' + picsite + '\n')
 
 @itchat.msg_register(TEXT, isMpChat=True)
 def get_ice(msg):
