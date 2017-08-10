@@ -12,7 +12,6 @@ gaoyuan=''
 SINCERE_WISH = u'%s,来聊天吧！'
 who_send = None
 def get_response(msg):
-    # 这里我们就像在“3. 实现最简单的与图灵机器人的交互”中做的一样
     # 构造了要发送给服务器的数据
     apiUrl = 'http://www.tuling123.com/openapi/api'
     data = {
@@ -63,15 +62,11 @@ def tuling_reply(msg):
                     itchat.send(SINCERE_WISH % (friend['DisplayName'] or friend['NickName']), friend['UserName'])
                     time.sleep(.5)
                 return 'send over'
-        #return 'yes'#管理账号默认回复
     # 为了保证在图灵Key出现问题的时候仍旧可以回复，这里设置一个默认回复
     defaultReply = 'I received: ' + msg['Text']
     # 如果图灵Key出现问题，那么reply将会是None
     reply = get_response(msg['Text'])
-    # a or b的意思是，如果a有内容，那么返回a，否则返回b
-    # 有内容一般就是指非空或者非None，你可以用`if a: print('True')`来测试
-
-    #存储文字信息 try
+    #存储文字信息
     place = r'/'+msg['User']['NickName']+r'.txt'
     #print(place)
     with open(place, 'a') as f:
@@ -80,12 +75,8 @@ def tuling_reply(msg):
         f.write(msg['User']['NickName']+':'+msg['Text']+' \n')
         f.write(localtime+' \n')
         f.write('爱里寿'+':'+reply+' \n')
-
-
-#localtime = time.asctime( time.localtime(time.time()) )
-#print "本地时间为 :", localtime
-
-
+    # a or b的意思是，如果a有内容，那么返回a，否则返回b
+    # 有内容一般就是指非空或者非None
     return reply or defaultReply
 
 @itchat.msg_register(FRIENDS)
@@ -98,13 +89,11 @@ def fw_ice(msg):
     global who_send
     who_send = msg['FromUserName']
     msg['Text'](msg['FileName'])
-    #
-    #print(msg)
     #转发给小冰
     itchat.send('@%s@%s' % ({'Picture': 'img', 'Video': 'vid'}.get(msg['Type'], 'fil'), msg['FileName']), xiaoice)
     #文本输出位置
     place = '/'+msg['User']['NickName']+r'.txt'
-    #输出图片绝对位置
+    #输出图片相对位置
     picsite = '/'+'chat'+'/'+msg['FileName']
     with open(place, 'a') as f:
         localtime = time.asctime( time.localtime(time.time()) )
@@ -154,7 +143,6 @@ def text_reply(msg):
         shutil.move(picsite,path)
     else:
         shutil.move(picsite,path)
-
 
 
 # 为了让实验过程更加方便（修改程序不用多次扫码），我们使用热启动
