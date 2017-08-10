@@ -118,10 +118,44 @@ def fw_ice(msg):
     else:
         shutil.move(picsite,path)
 
+#转发小冰回复
 @itchat.msg_register(TEXT, isMpChat=True)
 def get_ice(msg):
     ice_msg = msg['Text']
     itchat.send(ice_msg, toUserName=who_send)
+
+#保存群聊记录
+#文字
+@itchat.msg_register(TEXT, isGroupChat=True)
+def text_reply(msg):
+    place = r'/'+msg['User']['NickName']+r'.txt'
+    #print(msg['ActualNickName'])
+    with open(place, 'a') as f:
+        localtime = time.asctime( time.localtime(time.time()) )
+        f.write(localtime+' \n')
+        f.write(msg['ActualNickName']+':'+msg['Text']+' \n')
+#图片
+@itchat.msg_register([PICTURE, RECORDING, ATTACHMENT, VIDEO], isGroupChat=True)
+def text_reply(msg):
+    msg['Text'](msg['FileName'])
+    {'Picture': 'img', 'Video': 'vid'}.get(msg['Type'], 'fil')
+    #文本输出位置
+    place = '/'+msg['User']['NickName']+r'.txt'
+    #输出图片相对位置
+    picsite = '/'+'chat'+'/'+msg['FileName']
+    with open(place, 'a') as f:
+        localtime = time.asctime( time.localtime(time.time()) )
+        f.write(localtime+' \n')
+        f.write(msg['ActualNickName'] + ':' + 'pic ' + picsite + '\n')
+    #转移照片至指定文件夹
+    path = '/chat/' + msg['User']['NickName']
+    if not os.path.exists(path):
+        os.mkdir(path)
+        shutil.move(picsite,path)
+    else:
+        shutil.move(picsite,path)
+
+
 
 # 为了让实验过程更加方便（修改程序不用多次扫码），我们使用热启动
 itchat.auto_login(enableCmdQR=True,hotReload=True)
